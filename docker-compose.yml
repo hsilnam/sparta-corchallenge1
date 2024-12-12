@@ -1,0 +1,32 @@
+services:
+  spring:
+    build: # Docerfile을 통해 이미지를 빌드
+      context: .
+      dockerfile: Dockerfile
+    ports: # 호스트포트:컨테이너 내부 포트 연결, 외부에서 해당 포트로 접근가능
+      - "8080:8080"
+    container_name: corchal1-spring
+    image: corchal1-spring:latest
+
+    restart: always
+    environment: # 컨테이너 내부에서 사용할 환경 변수
+      # db: 아래 정의된 MySQL 컨테이너 이름, Docker Compose 네트워크 내에서 사용
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/corchallenge1
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root.2024
+    depends_on: # app 서비스가 db 서비스가 시작된 이후에 실행되도록 순서 지정
+      # (단순 컨테이너 실행 순서 보장, 해당 서비스가 완전히 준비되었는지 보장안됨)
+      - db
+  db:
+    image: mysql:8.0 # docker hub에서 이미지 사용 (이미지 없으면 자동으로 pull)
+    container_name: corchal1-mysql
+    restart: always # 컨테이너 중단되도 자동 재시작 (always: 시스템 재부팅 후에도 자동 재시작)
+    environment:
+      MYSQL_ROOT_PASSWORD: root.2024
+      MYSQL_DATABASE: corchallenge1
+    ports:
+      - "3307:3306"
+    volumes: # mysql 데이터 디렉토리를 Docker Volumn으로 연결. 컨테이너 종료, 삭제되어도 데이터 유지
+      - corchal1-mysql-data:/var/lib/mysql
+volumes:
+  corchal1-mysql-data:
