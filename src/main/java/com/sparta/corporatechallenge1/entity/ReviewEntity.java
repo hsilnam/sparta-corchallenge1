@@ -17,7 +17,7 @@ public class ReviewEntity extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "productId", nullable = false)
+    @JoinColumn(name = "productId", nullable = false) // TODO: cascade
     private ProductEntity product;
 
     @Column(nullable = false)
