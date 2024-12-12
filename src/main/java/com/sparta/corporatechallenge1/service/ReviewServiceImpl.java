@@ -6,6 +6,9 @@ import com.sparta.corporatechallenge1.dto.ReviewDto;
 import com.sparta.corporatechallenge1.dto.ReviewListDto;
 import com.sparta.corporatechallenge1.entity.ProductEntity;
 import com.sparta.corporatechallenge1.entity.ReviewEntity;
+import com.sparta.corporatechallenge1.exception.ErrorCode;
+import com.sparta.corporatechallenge1.exception.ProductException;
+import com.sparta.corporatechallenge1.exception.ReviewException;
 import com.sparta.corporatechallenge1.repository.ProductRepository;
 import com.sparta.corporatechallenge1.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,10 +28,10 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void createReview(ReviewCreateDto.Request dto) {
         ProductEntity product = productRepository.findById(dto.getProductId())
-                .orElseThrow(() -> new IllegalArgumentException("물건이 존재하지 않습니다")); // TODO: 예외처리
+                .orElseThrow(() -> new ProductException(ErrorCode.PRODUCT_NOT_FOUND_ERROR));
 
         if (reviewRepository.existsByProductIdAndUserId(dto.getProductId(), dto.getUserId())) {
-            throw new IllegalArgumentException("해당 물건에 대한 리뷰를 이미 작성한 유저입니다"); // TODO: 예외처리
+            throw new ReviewException(ErrorCode.REVIEW_ALREADY_EXISTS_ERROR);
         }
 
         // TODO: 이미지 처리
@@ -58,7 +61,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public ReviewListDto.Response getReviewList(ReviewListDto.Request dto) {
         ProductEntity product = productRepository.findById(dto.getProductId())
-                .orElseThrow(() -> new IllegalArgumentException("물건이 존재하지 않습니다")); // TODO: 예외처리
+                .orElseThrow(() -> new ProductException(ErrorCode.PRODUCT_NOT_FOUND_ERROR));
 
         List<ReviewEntity> reviewList = reviewRepository.findByProductIdAndIdGreaterThanOrderByCreatedAtAsc(
                 dto.getProductId(),
