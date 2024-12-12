@@ -1,6 +1,8 @@
 package com.sparta.corporatechallenge1.dto;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import java.util.List;
+
 
 
 public class ReviewListDto {
@@ -8,6 +10,7 @@ public class ReviewListDto {
     @Getter
     @Setter
     public static class Request {
+        @NotNull(message = "상품 ID는 필수입니다")
         private Long productId;
         private Long cursor;
         private int size = 10;
