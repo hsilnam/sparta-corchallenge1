@@ -16,9 +16,9 @@ public class ProductEntity {
     private Long id;
 
     @Column(nullable = false)
-    private Long reviewCount;
+    private Long reviewCount = 0L;
 
     @Column(nullable = false)
-    private Float score;
+    private Float score = 0.0f;
 
 }
