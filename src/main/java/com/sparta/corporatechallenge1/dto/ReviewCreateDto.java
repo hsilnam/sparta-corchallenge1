@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -24,6 +25,7 @@ public class ReviewCreateDto {
         @Max(value = 5, message = "평점은 최대 5점 이하여야 합니다.")
         private int score;
 
+        @Length(max = 200, message = "내용은 최대 200자 이내여야 합니다.")
         private String content;
 
     }
