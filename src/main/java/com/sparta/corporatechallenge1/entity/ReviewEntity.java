@@ -17,7 +17,7 @@ public class ReviewEntity extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "productId", nullable = false) // TODO: cascade
+    @JoinColumn(name = "productId", nullable = false) // product가 삭제되어도 리뷰는 남아있어야한다
     private ProductEntity product;
 
     @Column(nullable = false)

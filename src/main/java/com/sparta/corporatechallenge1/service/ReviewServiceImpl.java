@@ -20,14 +20,14 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class ReviewServiceImpl implements ReviewService {
     private final ProductRepository productRepository;
     private final ReviewRepository reviewRepository;
 
     @Override
+    @Transactional
     public void createReview(ReviewCreateDto.Request dto) {
-        ProductEntity product = productRepository.findById(dto.getProductId())
+        ProductEntity product = productRepository.findByIdWithPessimisticWrite(dto.getProductId())
                 .orElseThrow(() -> new ProductException(ErrorCode.PRODUCT_NOT_FOUND_ERROR));
 
         if (reviewRepository.existsByProductIdAndUserId(dto.getProductId(), dto.getUserId())) {
@@ -58,8 +58,11 @@ public class ReviewServiceImpl implements ReviewService {
         productRepository.save(product);
     }
 
+
     @Override
+    @Transactional(readOnly = true)
     public ReviewListDto.Response getReviewList(ReviewListDto.Request dto) {
+        // reviewEntity의 product필드를 사용하지 않고, ProductEntity를 독립적으로 가져와서 N+1 문제 발생하지 않음
         ProductEntity product = productRepository.findById(dto.getProductId())
                 .orElseThrow(() -> new ProductException(ErrorCode.PRODUCT_NOT_FOUND_ERROR));
 
